@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function generator(define, mode, handler) {
+    return (k, c) => {
+        const data = define[k];
+        let message;
+        if (typeof data !== "string") {
+            if (mode === "release") {
+                message = data.release;
+            }
+            else {
+                message = data.debug;
+            }
+        }
+        else {
+            message = data;
+        }
+        for (const found of message.matchAll(/\$\{\s*([^}\s:]+)(\s*:\s*[^}]+)?\s*}/g)) {
+            console.log("d");
+            // @ts-expect-error
+            message = message.replace(found[0], `${c[found[1]]}`);
+        }
+        return handler(message);
+    };
+}
+exports.default = generator;
+//# sourceMappingURL=lib.js.map
