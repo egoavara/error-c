@@ -6,10 +6,30 @@
   "scripts": {
     "build": "tsc"
   },
-  "author": "egoavara",
+  "author": {
+    "name": "egoavara",
+    "email": "egoavara@gmail.com",
+    "url": "https://velog.io/@egoavara"
+  },
   "license": "MIT",
   "keywords": [
     "typescript",
     "error"
-  ]
+  ],
+  "homepage": "https://github.com/iamGreedy/error-c",
+  "bugs": {
+    "url": "https://github.com/iamGreedy/error-c/issues",
+    "email": "egoavara@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamGreedy/error-c"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/node": "^17.0.8",
+    "typescript": "^4.5.4"
+  }
 }

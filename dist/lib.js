@@ -16,7 +16,6 @@ function generator(define, mode, handler) {
             message = data;
         }
         for (const found of message.matchAll(/\$\{\s*([^}\s:]+)(\s*:\s*[^}]+)?\s*}/g)) {
-            console.log("d");
             // @ts-expect-error
             message = message.replace(found[0], `${c[found[1]]}`);
         }
