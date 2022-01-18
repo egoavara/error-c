@@ -27,7 +27,9 @@ However, there is no way to know what value is needed for the message of that pa
 
 Until now, not now.
 
-Thanks for typescript `infer`, now we can guess what values ​​are needed for errors
+Thanks for typescript `infer`, now we can guess what values are needed for errors
+
+> If you're not using typescript, you don't need to use this package **at all**.
 
 Look at this, _it's also in the examples folder_.
 
