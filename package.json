@@ -4,7 +4,10 @@
   "description": "error-c is constant based error define micro framework, you can define error with message(dynamic) more staticaly and safely on typescript",
   "main": "./dist/lib.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "run-ex00": "ts-node ./examples/ex00.ts",
+    "run-ex01": "ts-node ./examples/ex01.ts",
+    "run-ex02": "ts-node ./examples/ex02.ts"
   },
   "author": {
     "name": "egoavara",

@@ -13,4 +13,5 @@ const fail = errorc(
   (msg) => msg
 );
 
+// "I'm not pizza, i'm potato!"
 console.log(fail("E0004", { notyou: "pizza", whoareyou: "potato" }));
