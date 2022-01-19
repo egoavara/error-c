@@ -7,7 +7,9 @@
     "build": "tsc",
     "run-ex00": "ts-node ./examples/ex00.ts",
     "run-ex01": "ts-node ./examples/ex01.ts",
-    "run-ex02": "ts-node ./examples/ex02.ts"
+    "run-ex02": "ts-node ./examples/ex02.ts",
+    "run-ex03": "ts-node ./examples/ex03.ts",
+    "run-ex04": "ts-node ./examples/ex04.ts"
   },
   "author": {
     "name": "egoavara",
