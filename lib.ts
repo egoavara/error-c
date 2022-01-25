@@ -87,7 +87,7 @@ export type ParseDefine<T extends Define> = {
 function generator<D extends Define, O, G extends ParseDefine<D>>(
   define: D,
   mode: "release" | "debug",
-  handler: (msg: string) => O
+  handler: (msg: string, code: string | number | symbol) => O
 ): <K extends keyof D>(k: K, c: G[K]["all"]) => O {
   return (k, c) => {
     const data = define[k];
@@ -107,7 +107,7 @@ function generator<D extends Define, O, G extends ParseDefine<D>>(
       // @ts-expect-error
       message = message.replace(found[0], `${c[found[1]]}`);
     }
-    return handler(message);
+    return handler(message, k);
   };
 }
 export default generator;

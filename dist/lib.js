@@ -19,7 +19,7 @@ function generator(define, mode, handler) {
             // @ts-expect-error
             message = message.replace(found[0], `${c[found[1]]}`);
         }
-        return handler(message);
+        return handler(message, k);
     };
 }
 exports.default = generator;

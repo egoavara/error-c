@@ -29,6 +29,6 @@ export declare type Define = Record<string | number | symbol, string | Condition
 export declare type ParseDefine<T extends Define> = {
     [K in keyof T]: ParseMessage<T[K]>;
 };
-declare function generator<D extends Define, O, G extends ParseDefine<D>>(define: D, mode: "release" | "debug", handler: (msg: string) => O): <K extends keyof D>(k: K, c: G[K]["all"]) => O;
+declare function generator<D extends Define, O, G extends ParseDefine<D>>(define: D, mode: "release" | "debug", handler: (msg: string, code: string | number | symbol) => O): <K extends keyof D>(k: K, c: G[K]["all"]) => O;
 export default generator;
 //# sourceMappingURL=lib.d.ts.map
