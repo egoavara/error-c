@@ -4,13 +4,25 @@ export type Trim<S extends string> = S extends ` ${infer T}`
   ? Trim<T>
   : S;
 
-type DefaultType = number | string | object | boolean;
+type DefaultType = number | string | object | boolean | (() => string);
 type LiteralToType<L extends string> = L extends "string"
+  ? string
+  : L extends "str"
   ? string
   : L extends "number"
   ? number
   : L extends "object"
   ? object
+  : L extends "boolean"
+  ? boolean
+  : L extends "bool"
+  ? boolean
+  : L extends "function"
+  ? () => string
+  : L extends "func"
+  ? () => string
+  : L extends "fn"
+  ? () => string
   : DefaultType;
 
 export type Merge<A, B> = B extends never
@@ -83,31 +95,62 @@ export type Define = Record<
 export type ParseDefine<T extends Define> = {
   [K in keyof T]: ParseMessage<T[K]>;
 };
-
+class MessageBuilder {
+  base!: (string | { key: string })[];
+  constructor(message: string) {
+    this.base = [];
+    let start = 0;
+    for (const found of message.matchAll(
+      /\$\{\s*([^}\s:]+)(\s*:\s*[^}]+)?\s*}/g
+    )) {
+      this.base.push(message.slice(start, found.index));
+      this.base.push({ key: found[1] });
+      start = (found.index ?? start) + found[0].length;
+    }
+    if (start !== message.length) {
+      this.base.push(message.slice(start));
+    }
+  }
+  build(context: Record<string, any>): string {
+    return this.base
+      .map((v) => {
+        if (typeof v === "string") {
+          return v;
+        } else {
+          const rep = context[v.key];
+          if (typeof rep === "object") {
+            return JSON.stringify(rep);
+          } else if (typeof rep === "function") {
+            return rep();
+          } else {
+            return rep;
+          }
+        }
+      })
+      .join("");
+  }
+}
 function generator<D extends Define, O, G extends ParseDefine<D>>(
   define: D,
   mode: "release" | "debug",
   handler: (msg: string, code: string | number | symbol) => O
 ): <K extends keyof D>(k: K, c: G[K]["all"]) => O {
+  const obj = Object.fromEntries(
+    Object.entries(define).map(([k, v]) => [
+      k,
+      typeof v === "string"
+        ? {
+            debug: new MessageBuilder(v),
+            release: new MessageBuilder(v),
+          }
+        : {
+            debug: new MessageBuilder(v["debug"]),
+            release: new MessageBuilder(v["release"]),
+          },
+    ])
+  ) as Record<keyof D, { debug: MessageBuilder; release: MessageBuilder }>;
   return (k, c) => {
-    const data = define[k];
-    let message: string;
-    if (typeof data !== "string") {
-      if (mode === "release") {
-        message = data.release;
-      } else {
-        message = data.debug;
-      }
-    } else {
-      message = data;
-    }
-    for (const found of message.matchAll(
-      /\$\{\s*([^}\s:]+)(\s*:\s*[^}]+)?\s*}/g
-    )) {
-      // @ts-expect-error
-      message = message.replace(found[0], `${c[found[1]]}`);
-    }
-    return handler(message, k);
+    return handler(obj[k][mode].build(c), k);
   };
 }
 export default generator;
