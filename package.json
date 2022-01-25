@@ -1,6 +1,6 @@
 {
   "name": "error-c",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "error-c is constant based error define micro framework, you can define error with message(dynamic) more staticaly and safely on typescript",
   "main": "./dist/lib.js",
   "scripts": {
