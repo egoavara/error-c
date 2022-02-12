@@ -5,14 +5,16 @@ const DEFINE_ERRORS = {
   STRING: "-${value:string}-",
   STR: "-${value:str}-",
   OBJECT: "-${value:object}-",
+  JSON: "-${value:json}-",
   BOOLEAN: "-${value:boolean}-",
   BOOL: "-${value:bool}-",
   FN: "-${value:fn}-",
   FUNC: "-${value:func}-",
   FUNCTION: "-${value:function}-",
+  OBJ_JSON: "-${ value : object | json }-",
+  STR_BOOL: "-${ value : str | bool }-",
   DEFAULT: "-${value}-",
 } as const;
-
 const fail = errorc(
   DEFINE_ERRORS,
   process.env.NODE_ENV === "production" ? "release" : "debug",
@@ -37,6 +39,11 @@ console.log(
 );
 console.log(
   fail("OBJECT", {
+    value: { type: "obj" },
+  })
+);
+console.log(
+  fail("JSON", {
     value: { type: "obj" },
   })
 );
@@ -67,6 +74,16 @@ console.log(
 console.log(
   fail("FUNCTION", {
     value: () => "function",
+  })
+);
+console.log(
+  fail("OBJ_JSON", {
+    value: () => ({ type: "obj", json: true }),
+  })
+);
+console.log(
+  fail("STR_BOOL", {
+    value: "e",
   })
 );
 console.log(

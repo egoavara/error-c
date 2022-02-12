@@ -24,4 +24,4 @@ const fail = errorc(
   process.env.NODE_ENV === "production" ? "release" : "debug",
   (msg) => msg
 );
-console.log(fail(-1, { w: "" }));
+console.log(fail(-1, {}));
