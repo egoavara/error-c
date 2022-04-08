@@ -1,1 +1,0 @@
-{"version":3,"file":"mbuilder.d.ts","sourceRoot":"","sources":["../src/mbuilder.ts"],"names":[],"mappings":"AAAA,qBAAa,cAAc;IACzB,IAAI,EAAG,CAAC,MAAM,GAAG;QAAE,GAAG,EAAE,MAAM,CAAC;QAAC,MAAM,EAAE,OAAO,CAAA;KAAE,CAAC,EAAE,CAAC;gBACzC,OAAO,EAAE,MAAM;IAiB3B,KAAK,CAAC,OAAO,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,MAAM;CAa5C"}

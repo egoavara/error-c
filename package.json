@@ -2,7 +2,14 @@
   "name": "error-c",
   "version": "1.2.0",
   "description": "error-c is constant based error define micro framework, you can define error with message(dynamic) more staticaly and safely on typescript",
-  "main": "./dist/lib.js",
+  "main": "./cjs/lib.js",
+  "module": "./esm/lib.js",
+  "exports": {
+    ".": {
+      "require": "./cjs/lib.js",
+      "import": "./esm/lib.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "run-ex00": "ts-node ./examples/ex00.ts",
