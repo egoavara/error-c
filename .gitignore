@@ -74,3 +74,16 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+
+
+cjs/**.js
+cjs/**.js.map
+cjs/**.d.ts
+cjs/**.d.ts.map
+
+
+esm/**.js
+esm/**.js.map
+esm/**.d.ts
+esm/**.d.ts.map

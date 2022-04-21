@@ -1,16 +1,17 @@
 export class MessageBuilder {
-  base!: (string | { key: string; isJSON: boolean })[];
+  readonly args: Record<string, string | null>
+  readonly base: (string | { key: string })[];
+
   constructor(message: string) {
+    this.args = {};
     this.base = [];
     let start = 0;
     for (const found of message.matchAll(
-      /\$\{\s*([^}\s:]+)(\s*:\s*[^}]+)?\s*}/g
+      /\$\{\s*([^}\s:]+)(\s*:\s*([^}]+))?\s*}/g
     )) {
+      this.args[found[1]] = found[3] ?? null
       this.base.push(message.slice(start, found.index));
-      this.base.push({
-        key: found[1],
-        isJSON: (found[2] ?? "").search("json") !== -1,
-      });
+      this.base.push({ key: found[1], });
       start = (found.index ?? start) + found[0].length;
     }
     if (start !== message.length) {
@@ -24,8 +25,8 @@ export class MessageBuilder {
           return v;
         } else {
           const rep = context[v.key];
-          const data = typeof rep === "function" ? rep() : rep;
-          return v.isJSON ? JSON.stringify(data) : `${data}`;
+          const data = typeof rep === "function" ? rep(context) : rep;
+          return `${data}`;
         }
       })
       .join("");

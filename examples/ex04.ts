@@ -1,5 +1,4 @@
-import { type } from "os";
-import errorc from "../lib";
+import errorc from "../src/lib";
 
 const DEFINE_ERRORS = {
   [-1]: "not found data",

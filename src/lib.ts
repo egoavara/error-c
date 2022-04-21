@@ -1,6 +1,6 @@
 import { letflat, ToFlat } from "./flattening";
-import { ParseDefine as innerParseDefine } from "./gparser";
-import { MessageBuilder } from "./mbuilder";
+import { ParseDefine as innerParseDefine } from "./parser";
+import { MessageBuilder } from "./builder";
 
 export type ParseDefine<T extends object> = innerParseDefine<ToFlat<T>>;
 function generator<D extends object, O, G extends ParseDefine<D>>(
@@ -18,3 +18,4 @@ function generator<D extends object, O, G extends ParseDefine<D>>(
   };
 }
 export default generator;
+export { NamespaceGenerate } from "./namespace-generator"

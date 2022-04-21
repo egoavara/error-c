@@ -1,4 +1,4 @@
-import errorc from "../lib";
+import errorc from "../src/lib";
 
 const DEFINE_ERRORS = {
   NUMBER: "-${value:number}-",

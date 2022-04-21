@@ -1,4 +1,4 @@
-import errorc from "../lib";
+import errorc from "../src/lib";
 
 const DEFINE_ERRORS = {
   E0004: "I'm not ${notyou}, i'm ${whoareyou}!",

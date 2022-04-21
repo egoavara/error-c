@@ -11,7 +11,11 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "test": "tap --ts",
+    "build": "npm run build:cjs & npm run build:esm",
+    "build:cjs": "rimraf './cjs/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./cjs/tsconfig.json",
+    "build:esm": "rimraf './esm/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./esm/tsconfig.json",
+    "prepublish": "npm run test && npm run build",
     "run-ex00": "ts-node ./examples/ex00.ts",
     "run-ex01": "ts-node ./examples/ex01.ts",
     "run-ex02": "ts-node ./examples/ex02.ts",
@@ -43,6 +47,10 @@
   ],
   "devDependencies": {
     "@types/node": "^17.0.12",
+    "@types/tap": "^15.0.6",
+    "rimraf": "^3.0.2",
+    "tap": "^16.0.1",
+    "ts-node": "^10.7.0",
     "typescript": "^4.5.4"
   }
 }

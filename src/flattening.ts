@@ -1,8 +1,7 @@
-// === begin:version1.2 ===
 // version1.2 : Flattening feature
 
-import { MessageBuilder } from "./mbuilder";
-import { MessageType } from "./types";
+import { MessageBuilder } from "./builder";
+import { MessageType } from "./parser";
 
 // detect flatten key list
 type FlatKeys<T, K extends keyof T> = K extends string
@@ -111,7 +110,7 @@ function* flatkeys(
     }
   }
 }
-
+export type ToFlatKeys<T extends object> = FlatKeys<T, keyof T>
 export type ToFlat<T extends object> = {
   [K in FlatKeys<T, keyof T>]: K extends string ? FlatTypes<T, K> : never;
 };
@@ -138,4 +137,3 @@ export function letflat<D extends Record<string | number, any>>(
   }
   return result;
 }
-// === end:version1.2 ===
