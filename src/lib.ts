@@ -11,7 +11,7 @@ export { NamespaceGenerate } from "./namespace-generator"
 function generator<D extends object, O = string>(
   define: D,
   options?: { handler?: (msg: string, code: ToFlatKeys<D>, context: Record<string, any>) => O, defaultMode?: 'release' | 'debug' }
-): (<K extends keyof ParseDefine<D>>(k: K, c: ParseDefine<D>[K]["all"], mode?: 'release' | 'debug') => O);
+): NamespaceGenerator<D, O>;
 function generator<D extends object, O = string>(
   generator: 'function',
   define: D,
@@ -23,7 +23,7 @@ function generator<D extends object, O = string>(
   options?: { handler?: (msg: string, code: ToFlatKeys<D>, context: Record<string, any>) => O, defaultMode?: 'release' | 'debug' }
 ): NamespaceGenerator<D, O>;
 function generator(arg0: any, arg1?: any, arg2?: any): any {
-  let generator = 'function'
+  let generator = 'namespace'
   let define: any = undefined
   let options: any = undefined
   if (typeof arg0 === 'string') {

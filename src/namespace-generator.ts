@@ -30,13 +30,13 @@ function recursiveGenerate(
       ns[k] = (unknownCtx: any, mode?: 'release' | 'debug') => {
         let ctx: any = {}
         let use: 'release' | 'debug' = defaultMode
-        if (typeof unknownCtx === 'object') {
+        if (typeof unknownCtx === 'string') {
+          use = unknownCtx as any
+        } else {
           ctx = unknownCtx
           if (mode !== undefined) {
             use = mode
           }
-        } else {
-          use = mode ?? use
         }
         if (use === 'release') {
           return handler(rmsgb.build(ctx), [...codePrefix, k].join('.'), ctx)

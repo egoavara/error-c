@@ -1,7 +1,13 @@
 import { ToFlat } from "./flattening";
 import { Merge, Trim } from "./utils";
 
-export type DefaultType = number | string | object | boolean | ((context: Record<string, any>) => string);
+export type DefaultType =
+  | bigint
+  | number
+  | string
+  | object
+  | boolean
+  | ((context: Record<string, any>) => string);
 
 export type MessageType = string | ConditionMessage;
 
@@ -11,9 +17,9 @@ export type LiteralToType<L extends string> =
   : L extends "str"
   ? string
   : L extends "number"
-  ? number
+  ? number | bigint
   : L extends "num"
-  ? number
+  ? number | bigint
   : L extends "object"
   ? object
   : L extends "obj"
@@ -23,11 +29,11 @@ export type LiteralToType<L extends string> =
   : L extends "bool"
   ? boolean
   : L extends "function"
-  ? () => string
+  ? (context: Record<string, any>) => string
   : L extends "func"
-  ? () => string
+  ? (context: Record<string, any>) => string
   : L extends "fn"
-  ? () => string
+  ? (context: Record<string, any>) => string
   : DefaultType;
 
 export type ConditionMessage = {

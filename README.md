@@ -37,19 +37,21 @@ Look at this, _it's also in the examples folder_.
 import errorc from "error-c";
 
 const DEFINE_ERRORS = {
-  E0001: "This is error!",
-  E0002: "I'm error too!",
-  E0003: "I'm ${whoareyou}!",
-  E0004: "I'm not ${notyou}, i'm ${whoareyou}!",
+    E0001: "This is error!",
+    E0002: "I'm error too!",
+    E0003: "I'm ${whoareyou}!",
+    E0004: "I'm not ${notyou}, i'm ${whoareyou}!",
 } as const;
 
 const fail = errorc(
-  DEFINE_ERRORS,
-  process.env.NODE_ENV === "production" ? "release" : "debug",
-  (msg) => msg
+    "namespace",
+    DEFINE_ERRORS,
+    {
+        defaultMode: "release",
+    }
 );
 
-console.log(fail("E0004", { notyou: "pizza", whoareyou: "potato" }));
+console.log(fail.E0004({ notyou: "pizza", whoareyou: "potato" }));
 ```
 
 That code is simply a generate error message function that create by automated generator.
@@ -76,120 +78,74 @@ All you need to do now is modify `DEFINE_ERRORS`. Typescript takes care of the r
 
 ## How to use?
 
-### Getting start
+---
+### Define
 
-You must follow object rule supported by this package.
+First of all, to use this library, you need to define it.
 
-In typescript code, this is the structure.
-
-```ts
-type ConditionMessage = {
-  release: string;
-  debug: string;
-};
-type Define = Record<string | number | symbol, string | ConditionMessage>;
-```
-
-You just need to define a constant object that conforms to this type.
-
-A simple example is below.
+You can define it like the code below.
 
 ```ts
 import { Define } from "error-c";
-const DEFINE_ERRORS: Define = {
-  E0001: "I'm not ${notyou}, i'm ${whoareyou}!",
-  E0001: {
-    release: "Release : ${relmsg}",
-    debug: "Debug : ${dbgmsg}",
-  },
+
+const DEFINE_ERRORS = {
+  SIMPLE0: "This is error!",
+  SIMPLE1: "I'm not ${notyou}, i'm ${whoareyou}!",
+  // You can define nested object
+  INNER : {
+    HELLO : "Inner hello?",
+    RENNI :{
+      HELLO : "Inner.Inner hello?",
+    }
+  }
 } as const;
 ```
 
-### Caution
+> **WARNING**
+>
+> `as const` is **VERY IMPORTANT** never take it off
 
-In fact, these types are supported by packages, but should not be used when defining an object.
+**Importantly, DO NOT explicitly define types.**
 
-You should not write code like below.
-
-```ts
-import { Define } from "error-c";
-// Wrong, Cause `:Define`
-const DEFINE_ERRORS: Define = {
-  E0001: "This is error!",
-  E0002: "I'm error too!",
-  E0003: "I'm ${whoareyou}!",
-  E0004: "I'm not ${notyou}, i'm ${whoareyou}!",
-} as const;
-```
-
-There is no syntactical problem, but if you define it like this, some of the information tracked by typescript will disappear and it will not work properly.
-
-**Importantly, never explicitly specify a type.**
 
 ---
-
-### Syntax
-
-The basic syntax is similar to javascript's [Template literals(Mozilla)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
-
-But, here is an additional syntax for specifying types.
-
-```ts
-const DEFINE_ERRORS: Define = {
-  NUMBER: "${value:number}",
-  STRING: "${value:string}",
-  OBJECT: "${value:object}",
-  DEFAULT: "${value}",
-} as const;
-```
-
-> **After defining the value, `as const` is required. Be careful not miss**
-
-In this case, typescript can know that field needs that type.
-
-If no type is specified, the type is assumed to be default type.
-
-Default type is `string | number | object`
-
-A type not specified here is assumed to be the default type string.
-
-![Type constaints](./images/type-constaints.png)
-
-We can infer that `value` specified by `number` can only contain `number` value.
-
-> [union types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types) won't work.
-> To be precise, it doesn't recognize anything other than the types I've defined. This is not possible with typescript syntax.
-
-```ts
-const DEFINE_ERRORS: Define = {
-  DORL: {
-    release: "rel : ${value}",
-    debug: "dbg : ${value}",
-  },
-} as const;
-```
-
-You can also create conditional messages.
-Currently, only `debug` and `release` are available.
-
-This is useful when you want more information to debugging.
-
----
-
-### Generate `fail` function
+### Generate 
 
 After writing the definition, the next thing to do is create an error generating function.
 
 You can do this simply as below.
 
 ```ts
-import errorc from "error-c";
+import errorc, {FunctionGenerator, NamespaceGenerate} from "error-c";
 
 const DEFINE_ERRORS = {
-  E0003: "I'm ${whoareyou}!",
+    E0001: "Hello, world!",
+    E0002: "I'm ${whoareyou}!",
+    INNER: {
+        INNER_ERROR: "inner error"
+    },
 } as const;
 
-const fail = errorc(DEFINE_ERRORS, "release", (msg) => msg);
+const fnStyle = errorc(DEFINE_ERRORS);
+// or
+// const fnStyle = errorc("function", DEFINE_ERRORS);
+// or
+// const fnStyle = FunctionGenerator(DEFINE_ERRORS);
+const nsStyle = errorc("namespace", DEFINE_ERRORS);
+// or
+// const nsStyle = NamespaceGenerate(DEFINE_ERRORS);
+
+// > Hello, world!
+console.log(fnStyle("E0001", {}))
+console.log(nsStyle.E0001())
+
+// > I'm potato!
+console.log(fnStyle("E0002", {whoareyou : "potato"}))
+console.log(nsStyle.E0002({whoareyou : "potato"}))
+
+// > inner error
+console.log(fnStyle("INNER.INNER_ERROR", {}))
+console.log(nsStyle.INNER.INNER_ERROR())
 ```
 
 Now you can generate error messages in the following way.
@@ -197,6 +153,84 @@ Now you can generate error messages in the following way.
 ```ts
 fail("E0003", { whoareyou: "potato" });
 ```
+
+
+--- 
+### Conditional message
+
+```ts
+import errorc from "error-c"
+
+const DEFINE_ERRORS = {
+    CONDMSG: { release: "hello, release", debug: "hello, debug" }
+} as const;
+
+const noDefault = errorc("namespace", DEFINE_ERRORS);
+const defaultIsDebug = errorc("namespace", DEFINE_ERRORS, { defaultMode: "debug", });
+const defaultIsRelease = errorc("namespace", DEFINE_ERRORS, { defaultMode: "release", });
+
+console.log(noDefault.CONDMSG());                   // expected : 'hello, release'
+console.log(noDefault.CONDMSG("debug"));            // expected : 'hello, debug'
+console.log(noDefault.CONDMSG("release"));          // expected : 'hello, release'
+console.log(defaultIsDebug.CONDMSG());              // expected : 'hello, debug'
+console.log(defaultIsDebug.CONDMSG("debug"));       // expected : 'hello, debug'
+console.log(defaultIsDebug.CONDMSG("release"));     // expected : 'hello, release'
+console.log(defaultIsRelease.CONDMSG());            // expected : 'hello, release'
+console.log(defaultIsRelease.CONDMSG("debug"));     // expected : 'hello, debug'
+console.log(defaultIsRelease.CONDMSG("release"));   // expected : 'hello, release'
+```
+You can create conditional messages.
+Currently, only `debug` and `release` are available.
+If there is no `defaultMode`, it is `release` .
+
+---
+### types
+
+This is useful if you want to allow only certain types of messages.
+
+```ts
+import errorc from "error-c"
+
+export type DefaultType =
+    | bigint
+    | number
+    | string
+    | object
+    | boolean
+    | ((context: Record<string, any>) => string);
+
+const DEFINE_ERRORS = {
+    NUMBER: "${value:number}",
+    STRING: "${value:string}",
+    OBJECT: "${value:object}",
+    BOOLEAN: "${value:boolean}",    // boolean
+    FUNCTION: "${value:function}",  // (context : Record<string, any>) => string
+    DEFAULT: "${value}",            // infer as `DefaultType`
+} as const;
+
+const ns = errorc("namespace", DEFINE_ERRORS);
+
+console.log(ns.NUMBER({ value: 1 }));
+console.log(ns.STRING({ value: "" }));
+console.log(ns.OBJECT({ value: { foo: { bar: "foo-bar" } } }));
+console.log(ns.BOOLEAN({ value: true }));
+console.log(ns.FUNCTION({ value: (context) => "function" }));
+
+console.log(ns.DEFAULT({ value: 1 }));
+console.log(ns.DEFAULT({ value: {} }));
+console.log(ns.DEFAULT({ value: { foo: { bar: "foo-bar" } } }));
+console.log(ns.DEFAULT({ value: true }));
+console.log(ns.DEFAULT({ value: (context) => "function" }));
+```
+
+![Type constaints](./images/type-constaints.png)
+> **WARNING**
+>
+> The type provided by errorc is not a typescript type, 
+> 
+> But a type defined separately by errorc.
+> 
+> Don't confuse this.
 
 ---
 
