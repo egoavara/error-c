@@ -238,44 +238,69 @@ console.log(ns.DEFAULT({ value: (context) => "function" }));
 
 ### Redefinition output type
 
-If you want the `fail` function to return an `Error` type, you can write the code as below.
+If you want to make the output type into `class` or `object` not `string`, you can use the like this.
 
 ```ts
 import errorc from "error-c";
 
 const DEFINE_ERRORS = {
-  ...
+    EOF: "End Of File",
+    UnexpectedError: {
+        debug: "unexpected error cause '${cause}'",
+        release: "unexpected error",
+    },
 } as const;
 
-const fail = errorc(
-  DEFINE_ERRORS,
-  process.env.NODE_ENV === "production" ? "release" : "debug",
-  (msg) => new Error(msg)
+class CustomError extends Error {
+    readonly code: string
+    readonly context: Record<string, any>
+    constructor(message: string, code: string, context: Record<string, any>) {
+        super(message)
+        this.code = code
+        this.context = context
+    }
+}
+
+const ns = errorc(
+    DEFINE_ERRORS,
+    {
+        handler: (message, code, context) => new CustomError(message, code, context)
+    }
 );
+
+// CustomError(
+//     "unexpected error cause '${secret data for debug}'",
+//     "UnexpectedError",
+//     {
+//         cause : "secret data for debug"
+//     }
+// )
+console.log(ns.UnexpectedError({ cause: "secret data for debug" }, "debug"))
+
+
+// CustomError(
+//     "unexpected error",
+//     "UnexpectedError",
+//     {}
+// )
+console.log(ns.UnexpectedError({ cause: "secret data for debug" }, "release"))
 ```
+`handler` automatically determine whether it's debug or release, provide the appropriate context
 
-This way, the fail function that originally returned `string` will now return an `Error` type.
+You can use context, code, and messages to emit other type instead of `string`.
 
-> `msg` is `string`
-
----
-
-The signature of the fail function to which all these functions are applied is as follows.
-
-![fail function signature is return Error](./images/fail-signature.png)
-
-First parameter(`Key`) is one of `E0001`, `E0002`, `E0003`, `E0004`
-Second parameter(`Context`) can be different from time to time depending on the first parameter.
-
-For example, if `E0004`, the context is an object that can only put `notyou`, `whoareyou`.
 
 ## More examples
 
-- [Simple example](https://github.com/iamGreedy/error-c/blob/main/examples/ex00.ts)
+Many example can be found [here](https://github.com/iamGreedy/error-c/tree/main/test)
 
-- [Release/Debug switch example](https://github.com/iamGreedy/error-c/blob/main/examples/ex01.ts)
 
-- [type, message handing example](https://github.com/iamGreedy/error-c/blob/main/examples/ex02.ts)
+- [function style generate](https://github.com/iamGreedy/error-c/blob/main/test/00_fn.ts)
+- [namespace style generate](https://github.com/iamGreedy/error-c/blob/main/test/01_ns.ts)
+- [how to define](https://github.com/iamGreedy/error-c/blob/main/test/02_default.ts)
+- [mode and default mode](https://github.com/iamGreedy/error-c/blob/main/test/03_defaultMode.ts)
+- [types](https://github.com/iamGreedy/error-c/blob/main/test/05_types.ts)
+- [handler](https://github.com/iamGreedy/error-c/blob/main/test/07_context-by-rel-dbg.ts)
 
 ## How does it work?
 
@@ -292,17 +317,4 @@ Surprisingly, typescript able to cut some of the parts from literals.
 
 Using this, I cut and pasted literal, and created the package by using generics as a kind of function.
 
-I think this method will be useful for text template libraries like internationalization(i18n).
-
-## Why a framework and not a library?
-
-To implement this feature, i use typescript `const assertion`.
-This is essential for implementation.
-
-So, to use this **framework**, you must specify the value as `const assertion`.
-
-The detailed technic described below, but to put it simply, you must follow certain rules to use the feature.
-
-So it is framework, not library, but **very** small
-
-However it's not important. you can just think whatever you want.
+I also think this method will be useful for text template libraries like internationalization(i18n).
