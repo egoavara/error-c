@@ -3,6 +3,7 @@ export type Trim<S extends string> = S extends ` ${infer T}`
   : S extends `${infer T} `
   ? Trim<T>
   : S;
+export type IsEmpty<O> = [keyof O] extends [never] ? true : false;
 
 export type Merge<A, B> = B extends never
   ? A

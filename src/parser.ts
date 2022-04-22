@@ -1,3 +1,4 @@
+import { ToFlat } from "./flattening";
 import { Merge, Trim } from "./utils";
 
 export type DefaultType = number | string | object | boolean | ((context: Record<string, any>) => string);
@@ -71,6 +72,8 @@ export type ParseMessage<M> = M extends ConditionMessage
   }
   : never;
 
-export type ParseDefine<T> = {
+type ForeachParseDefine<T> = {
   [K in keyof T]: ParseMessage<T[K]>;
 };
+
+export type ParseDefine<T extends object> = ForeachParseDefine<ToFlat<T>>

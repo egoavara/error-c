@@ -1,6 +1,6 @@
 {
   "name": "error-c",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "error-c is constant based error define micro framework, you can define error with message(dynamic) more staticaly and safely on typescript",
   "main": "./cjs/lib.js",
   "module": "./esm/lib.js",
@@ -15,13 +15,7 @@
     "build": "npm run build:cjs & npm run build:esm",
     "build:cjs": "rimraf './cjs/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./cjs/tsconfig.json",
     "build:esm": "rimraf './esm/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./esm/tsconfig.json",
-    "prepublish": "npm run test && npm run build",
-    "run-ex00": "ts-node ./examples/ex00.ts",
-    "run-ex01": "ts-node ./examples/ex01.ts",
-    "run-ex02": "ts-node ./examples/ex02.ts",
-    "run-ex03": "ts-node ./examples/ex03.ts",
-    "run-ex04": "ts-node ./examples/ex04.ts",
-    "run-ex05": "ts-node ./examples/ex05.ts"
+    "prepack": "npm run build && npm run test"
   },
   "author": {
     "name": "egoavara",
@@ -43,7 +37,8 @@
     "url": "https://github.com/iamGreedy/error-c"
   },
   "files": [
-    "dist"
+    "cjs",
+    "esm"
   ],
   "devDependencies": {
     "@types/node": "^17.0.12",

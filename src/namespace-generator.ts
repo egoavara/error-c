@@ -1,9 +1,9 @@
-import { stringify } from "querystring";
 import { MessageBuilder } from "./builder";
-import { letflat, ToFlatKeys } from "./flattening";
+import { ToFlatKeys } from "./flattening";
 import { ConditionMessage, intoConditionalMessage, ParseMessage } from "./parser";
-type IsEmpty<O> = [keyof O] extends [never] ? true : false
-type NamespaceGenerator<D, O> = {
+import { IsEmpty } from "./utils";
+
+export type NamespaceGenerator<D, O> = {
   [_ in keyof D]
   : D[_] extends string | ConditionMessage
   ? (
@@ -11,7 +11,7 @@ type NamespaceGenerator<D, O> = {
     ? ((mode?: 'release' | 'debug') => O)
     : ((ctx: ParseMessage<D[_]>["all"], mode?: 'release' | 'debug') => O)
   )
-  : NamespaceGenerator<D[_], O >
+  : NamespaceGenerator<D[_], O>
 }
 
 function recursiveGenerate(
@@ -28,14 +28,14 @@ function recursiveGenerate(
       const dmsgb = new MessageBuilder(cmsg.debug)
       const rmsgb = new MessageBuilder(cmsg.release)
       ns[k] = (unknownCtx: any, mode?: 'release' | 'debug') => {
-        let ctx:any = {}
-        let use:'release' | 'debug' = defaultMode
-        if(typeof unknownCtx === 'object'){
+        let ctx: any = {}
+        let use: 'release' | 'debug' = defaultMode
+        if (typeof unknownCtx === 'object') {
           ctx = unknownCtx
-          if(mode !== undefined){
+          if (mode !== undefined) {
             use = mode
           }
-        }else{
+        } else {
           use = mode ?? use
         }
         if (use === 'release') {
@@ -54,17 +54,16 @@ function recursiveGenerate(
 export function NamespaceGenerate<D extends object, O = string>(
   define: D,
   options?: {
-    handler?: (msg: string, code: keyof ToFlatKeys<D>, context: Record<string, any>) => O,
+    handler?: (msg: string, code: ToFlatKeys<D>, context: Record<string, any>) => O,
     defaultMode?: 'release' | 'debug'
   }
 ): NamespaceGenerator<D, O> {
-
+  const handler = options?.handler ?? ((msg, _0, _1) => msg)
+  const deafaultMode = options?.defaultMode ?? 'release'
   return recursiveGenerate(
     define,
-    (options?.handler ?? ((msg: string, _0: string, _1: any) => {
-      return msg
-    })) as any,
-    options?.defaultMode ?? 'release',
+    handler as any,
+    deafaultMode,
     []
   ) as any;
 }
