@@ -126,12 +126,14 @@ const DEFINE_ERRORS = {
     },
 } as const;
 
-const fnStyle = errorc(DEFINE_ERRORS);
-// or
-// const fnStyle = errorc("function", DEFINE_ERRORS);
+const fnStyle = errorc("function", DEFINE_ERRORS);
 // or
 // const fnStyle = FunctionGenerator(DEFINE_ERRORS);
+
 const nsStyle = errorc("namespace", DEFINE_ERRORS);
+// or
+// const nsStyle = errorc(DEFINE_ERRORS);
+
 // or
 // const nsStyle = NamespaceGenerate(DEFINE_ERRORS);
 
@@ -147,13 +149,13 @@ console.log(nsStyle.E0002({whoareyou : "potato"}))
 console.log(fnStyle("INNER.INNER_ERROR", {}))
 console.log(nsStyle.INNER.INNER_ERROR())
 ```
+As you can see, there is two generator, `function` and `namespace`
 
-Now you can generate error messages in the following way.
+Two are similar
 
-```ts
-fail("E0003", { whoareyou: "potato" });
-```
+But the `namespace` has the advantage to omitting it if there is no parameters
 
+Also, IDEs such as vscode support shortcuts to declarations, `namespace` is recommended to use the namespace method whenever possible.
 
 --- 
 ### Conditional message
@@ -231,34 +233,6 @@ console.log(ns.DEFAULT({ value: (context) => "function" }));
 > But a type defined separately by errorc.
 > 
 > Don't confuse this.
-
----
-
-### `release` | `debug`, conditional messaging
-
-Depending on the current application state, you may want to display a different message.
-
-Typically, when debugging, you may want to show **secret** information in an error message.
-
-In this case, if you use the second parameter of the `errorc` function, you can automatically display a different message during debugging and release.
-
-```ts
-import errorc from "error-c";
-
-const DEFINE_ERRORS = {
-  E0003: "I'm ${whoareyou}!",
-} as const;
-
-const fail = errorc(
-  DEFINE_ERRORS,
-  process.env.NODE_ENV === "production" ? "release" : "debug",
-  (msg) => msg
-);
-```
-
-The code above is how to determine whether to display a debugging message or a release message using NODE_ENV.
-
-Of course, you can define whatever you want.
 
 ---
 

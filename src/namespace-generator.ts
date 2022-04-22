@@ -39,9 +39,9 @@ function recursiveGenerate(
           }
         }
         if (use === 'release') {
-          return handler(rmsgb.build(ctx), [...codePrefix, k].join('.'), ctx)
+          return handler(rmsgb.build(ctx), [...codePrefix, k].join('.'), Object.fromEntries(Object.keys(rmsgb.args).map(k => [k, ctx[k]])))
         } else {
-          return handler(dmsgb.build(ctx), [...codePrefix, k].join('.'), ctx)
+          return handler(dmsgb.build(ctx), [...codePrefix, k].join('.'), Object.fromEntries(Object.keys(dmsgb.args).map(k => [k, ctx[k]])))
         }
       }
     } else {

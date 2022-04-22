@@ -18,6 +18,7 @@ export function FunctionGenerator<D extends object, O = string>(
         if (!(k in result)) {
             throw new Error(`not exist key = '${k}'`)
         }
-        return handler(result[k][m ?? defaultMode].build(c), k, c);
+        const mbuilder = result[k][m ?? defaultMode]
+        return handler(mbuilder.build(c), k, Object.fromEntries(Object.keys(mbuilder.args).map(k => [k, (c as any)[k]])));
     }
 }
