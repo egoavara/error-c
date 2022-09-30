@@ -1,7 +1,7 @@
-import { MessageBuilder } from "./builder";
-import { ToFlatKeys } from "./flattening";
-import { ConditionMessage, intoConditionalMessage, ParseMessage } from "./parser";
-import { IsEmpty } from "./utils";
+import { MessageBuilder } from "./builder.js";
+import { ToFlatKeys } from "./flattening.js";
+import { ConditionMessage, intoConditionalMessage, ParseMessage } from "./parser.js";
+import { IsEmpty } from "./utils.js";
 
 export type NamespaceGenerator<D, O> = {
   [_ in keyof D]

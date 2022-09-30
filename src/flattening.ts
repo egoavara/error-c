@@ -1,7 +1,7 @@
 // version1.2 : Flattening feature
 
-import { MessageBuilder } from "./builder";
-import { MessageType } from "./parser";
+import { MessageBuilder } from "./builder.js";
+import { MessageType } from "./parser.js";
 
 // detect flatten key list
 type FlatKeys<T, K extends keyof T> = K extends string

@@ -1,5 +1,5 @@
-import { ToFlat } from "./flattening";
-import { Merge, Trim } from "./utils";
+import { ToFlat } from "./flattening.js";
+import { Merge, Trim } from "./utils.js";
 
 export type DefaultType =
   | bigint

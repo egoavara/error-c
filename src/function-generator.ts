@@ -1,5 +1,5 @@
-import { letflat, ToFlatKeys } from "./flattening";
-import { ParseDefine } from "./parser";
+import { letflat, ToFlatKeys } from "./flattening.js";
+import { ParseDefine } from "./parser.js";
 
 export function FunctionGenerator<D extends object, O = string>(
     define: D,

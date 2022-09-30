@@ -1,11 +1,11 @@
-import { ToFlatKeys } from "./flattening"
-import { FunctionGenerator } from "./function-generator"
-import { NamespaceGenerate, NamespaceGenerator } from "./namespace-generator"
-import { ParseDefine } from "./parser"
+import { ToFlatKeys } from "./flattening.js"
+import { FunctionGenerator } from "./function-generator.js"
+import { NamespaceGenerate, NamespaceGenerator } from "./namespace-generator.js"
+import { ParseDefine } from "./parser.js"
 
-export { ParseDefine } from "./parser"
-export { FunctionGenerator } from "./function-generator"
-export { NamespaceGenerate } from "./namespace-generator"
+export { ParseDefine } from "./parser.js"
+export { FunctionGenerator } from "./function-generator.js"
+export { NamespaceGenerate } from "./namespace-generator.js"
 
 
 function generator<D extends object, O = string>(
