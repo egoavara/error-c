@@ -15,7 +15,7 @@
     "build": "npm run build:cjs & npm run build:esm",
     "build:cjs": "rimraf './cjs/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./cjs/tsconfig.json",
     "build:esm": "rimraf './esm/**.{d.ts,d.ts.map,js,js.map}' && tsc -p ./esm/tsconfig.json",
-    "prepack": "npm run build && npm run test"
+    "prepack": "npm run build"
   },
   "author": {
     "name": "egoavara",
